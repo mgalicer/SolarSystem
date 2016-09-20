@@ -9,7 +9,7 @@ def randcolor():
 class SolarSystem():
   def __init__(self):
     self.sun = Sun((0,0), 100, "yellow")
-    self.planets = []
+    self.planets = [] #change variables to start with _
     self._lastClicked = None
     for i in range(random.randint(3,6)):
       planet = Planet(self.sun, random.randint(100, 350), random.randint(20, 70), randcolor(), random.uniform(0.009, 0.02))
@@ -25,9 +25,28 @@ class SolarSystem():
       p.move()
 
   def onClick(self, coords):
-    self.sun.onClick(coords)
+    if self.sun.onClick(coords):
+      self._lastClicked = self.sun
     for p in self.planets:
-      p.onClick(coords)
+      if p.onClick(coords):
+        self._lastClicked = p
+
+  def Up(self):
+    if self._lastClicked:
+      self._lastClicked.size += 10
+
+  def Down(self):
+    if self._lastClicked:
+      self._lastClicked.size -= 10
+
+  def Left(self):
+    if self._lastClicked and self._lastClicked != self.sun:
+      if self._lastClicked.orbitRadius > 10:
+        self._lastClicked.orbitRadius -= 10
+
+  def Right(self):
+    if self._lastClicked and self._lastClicked != self.sun:
+      self._lastClicked.orbitRadius += 10
 
 class Sun:
   def __init__(self,center,size,color):
@@ -46,6 +65,7 @@ class Sun:
   def onClick(self, location):
     if self.inside(location):
       self.setColor()
+      return True
 
   def getCenter(self):
     return self.center
@@ -91,5 +111,13 @@ screen=turtle.Screen()
 screen.onkey(turtle.bye,"q")
 screen.ontimer(start,0)
 screen.onclick(onClick)
+screen.onkey(system.Up, "Up")
+screen.onkey(system.Down, "Down")
+screen.onkey(system.Left, "Left")
+screen.onkey(system.Right, "Right")
+screen.onkey(system.Right, "[")
+screen.onkey(system.Right, "]")
+
+
 screen.listen()
 turtle.mainloop()
