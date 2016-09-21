@@ -48,6 +48,24 @@ class SolarSystem():
     if self._lastClicked and self._lastClicked != self.sun:
       self._lastClicked.orbitRadius += 10
 
+  def leftBracket(self):
+    if self._lastClicked:
+      self._lastClicked.speed += 0.01
+
+  def rightBracket(self):
+    if self._lastClicked:
+      if self._lastClicked.speed > 0:
+        self._lastClicked.speed -= 0.01
+
+  def newMoon(self):
+    if self._lastClicked:
+      moon = Planet(self._lastClicked, random.randint(30, 60), random.randint(5, 20), randcolor(), random.uniform(0.04, 0.08))
+      self.planets.append(moon)
+
+  def changeColor(self):
+    if self._lastClicked:
+      self._lastClicked.color = randcolor()
+
 class Sun:
   def __init__(self,center,size,color):
     self.center = center
@@ -115,8 +133,10 @@ screen.onkey(system.Up, "Up")
 screen.onkey(system.Down, "Down")
 screen.onkey(system.Left, "Left")
 screen.onkey(system.Right, "Right")
-screen.onkey(system.Right, "[")
-screen.onkey(system.Right, "]")
+screen.onkey(system.leftBracket, "[")
+screen.onkey(system.rightBracket, "]")
+screen.onkey(system.newMoon, "n")
+screen.onkey(system.changeColor,"space")
 
 
 screen.listen()
